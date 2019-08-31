@@ -1,12 +1,10 @@
 package com.kaisn;
 
-import com.kaisn.ws.Employee;
 import com.kaisn.ws.EmployeeService;
 
 import javax.xml.namespace.QName;
 import javax.xml.ws.Service;
 import java.net.URL;
-import java.util.List;
 
 public class WSClientUtils {
 
