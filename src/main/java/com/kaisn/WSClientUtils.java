@@ -9,22 +9,21 @@ import org.apache.cxf.endpoint.Client;
 import org.apache.cxf.frontend.ClientProxy;
 import org.apache.cxf.jaxws.JaxWsProxyFactoryBean;
 import org.apache.cxf.transport.http.HTTPConduit;
+import org.apache.log4j.Logger;
 
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
-import javax.xml.namespace.QName;
-import javax.xml.ws.Service;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.net.URL;
 import java.security.KeyStore;
 import java.util.Properties;
 
 public class WSClientUtils {
 
+
+    private static Logger logger = Logger.getLogger(WSClientUtils.class);
 
     private static Object object = null;
 
@@ -60,6 +59,7 @@ public class WSClientUtils {
 
             return object;
         }catch (Exception e){
+            logger.error("Failed to create webservice interface instance.",e);
             return null;
         }
     }

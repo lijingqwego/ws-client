@@ -5,15 +5,14 @@ package com.kaisn.utils.encry; /**
  * @version 1.0
  * @date 2018/10/18
  */
+
 import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
 
-import javax.crypto.*;
+import javax.crypto.Cipher;
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 
 /*
@@ -62,20 +61,9 @@ public class SymmetricEncoder {
             String AES_encode=new String(new BASE64Encoder().encode(byte_AES));
             //11.将字符串返回
             return AES_encode;
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (NoSuchPaddingException e) {
-            e.printStackTrace();
-        } catch (InvalidKeyException e) {
-            e.printStackTrace();
-        } catch (IllegalBlockSizeException e) {
-            e.printStackTrace();
-        } catch (BadPaddingException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
-
         //如果有错就返加nulll
         return null;
     }
@@ -115,35 +103,18 @@ public class SymmetricEncoder {
             byte [] byte_decode=cipher.doFinal(byte_content);
             String AES_decode=new String(byte_decode,"utf-8");
             return AES_decode;
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (NoSuchPaddingException e) {
-            e.printStackTrace();
-        } catch (InvalidKeyException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (IllegalBlockSizeException e) {
-            e.printStackTrace();
-        } catch (BadPaddingException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
-
         //如果有错就返加nulll
         return null;
     }
 
     public static void main(String[] args) throws Exception {
-
-//        if(args.length!=1){
-//            throw  new Exception("请输入需要加密的内容!");
-//        }
-//        String user=args[0];
-//
         String encrpt = AESEncode("qwe3135");
         System.out.println("加密后的密文为："+encrpt);
-
-        //System.out.println(AESDncode("/L0gv0cpoTwjsp5MaIVcUQ=="));
+        String aesDncode = AESDncode("/L0gv0cpoTwjsp5MaIVcUQ==");
+        System.out.println("解密后的明文为："+aesDncode);
     }
 
 }
