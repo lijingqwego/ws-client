@@ -64,7 +64,7 @@ public class WSClientUtils {
         }
     }
 
-    public static KeyManager[] getKeyManagers(Properties properties) {
+    public static KeyManager[] getKeyManagers(Properties properties) throws Exception {
         InputStream inputStream = null;
         try {
             // 获取默认的 X509算法
@@ -87,15 +87,12 @@ public class WSClientUtils {
             factory.init(ks, keyStorePassword.toCharArray());
             KeyManager[] keyms = factory.getKeyManagers();
             return keyms;
-        } catch (Exception e) {
-            e.printStackTrace();
         } finally {
             IOUtils.closeQuietly(inputStream);
         }
-        return null;
     }
 
-    public static TrustManager[] getTrustManagers(Properties properties) {
+    public static TrustManager[] getTrustManagers(Properties properties) throws Exception {
         // 读取证书仓库输入流
         InputStream inputStream = null;
         try {
@@ -119,11 +116,8 @@ public class WSClientUtils {
             factory.init(ks);
             TrustManager[] tms = factory.getTrustManagers();
             return tms;
-        } catch (Exception e) {
-            e.printStackTrace();
         } finally {
             IOUtils.closeQuietly(inputStream);
         }
-        return null;
     }
 }
