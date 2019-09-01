@@ -119,12 +119,12 @@ function addItem() {
         type: 2,
         area: ['600px', '400px'],
         shadeClose: false, //点击遮罩关闭
-        content: "/emp-web/page/addEmpItem",
+        content: "/ws-client/page/addEmpItem",
         btn:['提交','取消'],
         yes:function(index,layero){
             var body = top.layer.getChildFrame('body',index);
             $.ajax({
-                url:"/emp-web/emp/add",
+                url:"/ws-client/emp/add",
                 type:'post',
                 data:{
                     'empName':body.find("#empName").val(),
@@ -159,7 +159,7 @@ function delItem(id){
     var param={};
     param.empId=id;
     $.ajax({
-        url: "/emp-web/emp/del",
+        url: "/ws-client/emp/del",
         async:false,
         type:"POST",
         data:param,
@@ -181,7 +181,7 @@ function itemInfo(data) {
         shade: 0.4,
         title: "修改员工信息",
         offset: '50px',
-        content: "/emp-web/page/addEmpItem",
+        content: "/ws-client/page/addEmpItem",
         success: function (layero, index) {//弹出层打开后的回调函数
             var body = layer.getChildFrame('body', index);//获取弹出层的dom元素
             result = JSON.stringify(data);
@@ -214,7 +214,7 @@ function itemInfo(data) {
         yes:function(index,layero){
             var body = top.layer.getChildFrame('body',index);
             $.ajax({
-                url:"/emp-web/emp/upd",
+                url:"/ws-client/emp/upd",
                 type:'post',
                 data:{
                     'empId':body.find("#empId").val(),
