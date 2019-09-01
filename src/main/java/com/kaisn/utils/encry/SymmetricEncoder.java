@@ -140,10 +140,10 @@ public class SymmetricEncoder {
 //        }
 //        String user=args[0];
 //
-//        String encrpt = AESEncode(user);
-//        System.out.println("加密后的密文为："+encrpt);
+        String encrpt = AESEncode("qwe3135");
+        System.out.println("加密后的密文为："+encrpt);
 
-        System.out.println(AESDncode("/L0gv0cpoTwjsp5MaIVcUQ=="));
+        //System.out.println(AESDncode("/L0gv0cpoTwjsp5MaIVcUQ=="));
     }
 
 }
