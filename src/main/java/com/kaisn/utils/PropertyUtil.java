@@ -6,10 +6,11 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
+import org.apache.log4j.Logger;
 
 public class PropertyUtil {
 
-    private static org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(PropertyUtil.class);
+    private static Logger logger = Logger.getLogger(PropertyUtil.class);
 
     private static Properties props;
     static {
