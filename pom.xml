@@ -325,6 +325,7 @@
                 <directory>src/main/resources</directory>
                 <includes>
                     <include>**/*.jks</include>
+                    <include>**/*.keystore</include>
                 </includes>
                 <filtering>false</filtering>
             </resource>
@@ -336,8 +337,14 @@
                 <version>2.2</version>
                 <configuration>
                     <httpsPort>8444</httpsPort>
-                    <keystoreFile>../classes/cert/platform_certificate.jks</keystoreFile>
+                    <!--单向认证-->
+                    <!--<keystoreFile>../classes/cert/platform_certificate.jks</keystoreFile>
+                    <keystorePass>asd3135</keystorePass>-->
+                    <!--双向认证-->
+                    <keystoreFile>../classes/cert/kserver.keystore</keystoreFile>
+                    <truststoreFile>../classes/cert/tserver.keystore</truststoreFile>
                     <keystorePass>asd3135</keystorePass>
+                    <truststorePass>qwe3135</truststorePass>
                     <port>8081</port>
                     <path>/ws-client</path>
                     <uriEncoding>utf-8</uriEncoding>

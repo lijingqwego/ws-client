@@ -28,18 +28,21 @@ public class HttpsRequest {
         String result = null;
         HttpsURLConnection httpsConnection = null;
         try {
-            SSLContext sslContext = SSLContext.getInstance("SSL","SunJSSE");
-            sslContext.init(null, new TrustManager[]{new ClientTrustManager()}, new SecureRandom());
-            URL url = new URL(requestUrl);
-            httpsConnection = (HttpsURLConnection) url.openConnection();
             HostnameVerifier hostnameVerifier = new HostnameVerifier() {
                 public boolean verify(String s, SSLSession sslsession) {
                     logger.warn("WARNING: Hostname is not matched for cert.");
                     return true;
                 }
             };
+            URL url = new URL(requestUrl);
+            httpsConnection = (HttpsURLConnection) url.openConnection();
             httpsConnection.setHostnameVerifier(hostnameVerifier);
-            httpsConnection.setSSLSocketFactory(sslContext.getSocketFactory());
+            //单向认证
+            /*SSLContext sslContext = SSLContext.getInstance("SSL","SunJSSE");
+            sslContext.init(null, new TrustManager[]{new ClientTrustManager()}, new SecureRandom());
+            httpsConnection.setSSLSocketFactory(sslContext.getSocketFactory());*/
+            //双向认证
+            httpsConnection.setSSLSocketFactory(ClientSSLContext.getSSLSocketFactory());
             httpsConnection.setDoOutput(true);
             httpsConnection.setDoInput(true);
             httpsConnection.setConnectTimeout(3000);
