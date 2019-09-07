@@ -43,7 +43,7 @@ public class EmployeeController {
             employee.setOffset(Integer.parseInt(page)-1);
             employee.setRows(Integer.parseInt(limit));
 
-            EmployeeService employeeService = (EmployeeService) WSClientUtils.getInstance(SERVICE_NAME);
+            EmployeeService employeeService = (EmployeeService) WSClientUtils.getInstance(SERVICE_NAME,EmployeeService.class);
 
             employeeList = employeeService.getEmployeeList(employee);
         } catch (Exception e) {
@@ -73,7 +73,7 @@ public class EmployeeController {
             employee.setDescText(descText);
             employee.setAddress(address);
 
-            EmployeeService employeeService = (EmployeeService) WSClientUtils.getInstance(SERVICE_NAME);
+            EmployeeService employeeService = (EmployeeService) WSClientUtils.getInstance(SERVICE_NAME,EmployeeService.class);
 
             //添加数据
             isSuccess = employeeService.addEmployee(employee);
@@ -94,7 +94,7 @@ public class EmployeeController {
             Employee employee = new Employee();
             employee.setEmpId(empId);
 
-            EmployeeService employeeService = (EmployeeService) WSClientUtils.getInstance(SERVICE_NAME);
+            EmployeeService employeeService = (EmployeeService) WSClientUtils.getInstance(SERVICE_NAME,EmployeeService.class);
 
             //删除数据
             isSuccess = employeeService.delEmployee(employee);
@@ -115,7 +115,7 @@ public class EmployeeController {
             Employee param = new Employee();
             param.setEmpId(empId);
 
-            EmployeeService employeeService = (EmployeeService) WSClientUtils.getInstance(SERVICE_NAME);
+            EmployeeService employeeService = (EmployeeService) WSClientUtils.getInstance(SERVICE_NAME,EmployeeService.class);
 
             //删除数据
             employee = employeeService.getEmployee(param);
@@ -148,7 +148,7 @@ public class EmployeeController {
             employee.setDescText(descText);
             employee.setAddress(address);
 
-            EmployeeService employeeService = (EmployeeService) WSClientUtils.getInstance(SERVICE_NAME);
+            EmployeeService employeeService = (EmployeeService) WSClientUtils.getInstance(SERVICE_NAME,EmployeeService.class);
 
             //删除数据
             isSuccess = employeeService.updEmployee(employee);
@@ -169,7 +169,7 @@ public class EmployeeController {
                     "attachment;filename=" + new String("员工列表.xls".getBytes(), "ISO-8859-1"));
             ServletOutputStream outputStream = response.getOutputStream();
 
-            EmployeeService employeeService = (EmployeeService) WSClientUtils.getInstance(SERVICE_NAME);
+            EmployeeService employeeService = (EmployeeService) WSClientUtils.getInstance(SERVICE_NAME,EmployeeService.class);
 
             int count = employeeService.getEmployeeListCount(null);
             Employee employee = new Employee();

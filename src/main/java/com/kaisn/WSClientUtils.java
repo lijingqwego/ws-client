@@ -29,7 +29,7 @@ public class WSClientUtils {
 
     private static final String RESOURCE_PATH = "src/main/resources";
 
-    public static Object getInstance(String serviceName) {
+    public static Object getInstance(String serviceName,Class<?> serviceClass) {
 
         try {
             if(object != null){
@@ -42,7 +42,7 @@ public class WSClientUtils {
 
             JaxWsProxyFactoryBean factoryBean = new JaxWsProxyFactoryBean();
             factoryBean.setAddress(wsdlUrl);
-            factoryBean.setServiceClass(EmployeeService.class);
+            factoryBean.setServiceClass(serviceClass);
             object = factoryBean.create();
             Client proxy = ClientProxy.getClient(object);
             HTTPConduit conduit = (HTTPConduit) proxy.getConduit();
