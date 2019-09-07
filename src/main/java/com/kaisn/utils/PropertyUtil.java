@@ -2,6 +2,7 @@ package com.kaisn.utils;
 
 import org.apache.commons.io.IOUtils;
 
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,9 +24,9 @@ public class PropertyUtil {
         InputStream in = null;
         try {
             // <!--第一种，通过类加载器进行获取properties文件流-->
-            in = PropertyUtil.class.getClassLoader().getResourceAsStream("path.properties");
+           // in = new FileInputStream("src/main/resources/properties/config.properties");
             // <!--第二种，通过类进行获取properties文件流-->
-            // in = PropertyUtil.class.getResourceAsStream("/jdbc.properties");
+             in = PropertyUtil.class.getResourceAsStream("/properties/config.properties");
             props.load(in);
         } catch (FileNotFoundException e) {
             logger.error("path.properties file not found");
