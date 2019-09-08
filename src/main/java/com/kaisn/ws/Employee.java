@@ -1,6 +1,8 @@
 
 package com.kaisn.ws;
 
+import com.kaisn.pojo.FieldMeta;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
@@ -20,14 +22,31 @@ import javax.xml.bind.annotation.XmlType;
 })
 public class Employee {
 
+    @FieldMeta(flag = true)
     protected String address;
+
+    @FieldMeta(flag = true)
     protected String birth;
+
+    @FieldMeta(flag = true)
     protected String descText;
+
+    @FieldMeta(flag = true)
     protected String email;
+
+    @FieldMeta(flag = true)
     protected String empId;
+
+    @FieldMeta(flag = true)
     protected String empName;
+
+    @FieldMeta(flag = true)
     protected String gender;
+
+    @FieldMeta
     protected int offset;
+
+    @FieldMeta
     protected int rows;
 
     public String getAddress() {

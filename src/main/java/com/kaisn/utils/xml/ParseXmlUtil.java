@@ -1,6 +1,9 @@
 package com.kaisn.utils.xml;
 
+import com.kaisn.WSClientUtils;
+import com.kaisn.pojo.FieldMeta;
 import com.kaisn.ws.Employee;
+import com.kaisn.ws.EmployeeService;
 import org.apache.log4j.Logger;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -13,74 +16,75 @@ import org.dom4j.io.XMLWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
 
 public class ParseXmlUtil {
 
     private static Logger logger = Logger.getLogger(ParseXmlUtil.class);
 
-    public static Element useDom4JReadXml(String soucePath){
-        try {
-            File file = new File(soucePath);
-            SAXReader read = new SAXReader();
-            org.dom4j.Document doc = read.read(file);
-            Element root = doc.getRootElement();
-            return root;
-        } catch (Exception e) {
-            logger.error("xml parse failure",e);
-        }
-        return null;
-    }
-
-    public static void readXML() {
+    public static List<Object> readXML(Class<?> cls) {
+        List<Object> objects = new ArrayList<Object>();
         SAXReader sr = new SAXReader();// 获取读取xml的对象。
         try {
             Document doc = sr.read("src/main/resources/employee.xml");// 得到xml所在位置。然后开始读取。并将数据放入doc中
             Element rootElement = doc.getRootElement();// 向外取数据，获取xml的根节点。
-            logger.info("根节点：" + rootElement.getName());
             Iterator<Element> it = rootElement.elementIterator();// 从根节点下依次遍历，获取根节点下所有子节点
             while (it.hasNext()) {// 遍历子节点
                 Element next = it.next();
-                //String str = next.getText();
                 Iterator<Element> iterator = next.elementIterator();
                 while (iterator.hasNext()) {
                     Element element = iterator.next();
-                    logger.info(element.getName() + "=" + element.getData());
+                    Iterator<Element> iter = element.elementIterator();
+                    Object obj = cls.newInstance();
+                    while (iter.hasNext()) {
+                        Element ele = iter.next();
+                        String fieldName = ele.getName();
+                        String upperChar = fieldName.substring(0,1).toUpperCase();
+                        String anotherStr = fieldName.substring(1);
+                        String methodName = "set" + upperChar + anotherStr;
+                        Object data = ele.getData();
+                        Method method = cls.getMethod(methodName,String.class);
+                        method.setAccessible(true);
+                        method.invoke(obj, data);
+                    }
+                    objects.add(obj);
                 }
             }
-        } catch (DocumentException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
+        return objects;
     }
 
-    public static void writeToXML() {
-
-        Employee employee = new Employee();
-
-        employee.setEmpId("001");
-        employee.setEmpName("lijing");
-        employee.setGender("男");
-        employee.setAddress("江西吉安");
-        employee.setBirth("1992-01-30");
-        employee.setDescText("ha lou");
-        employee.setEmail("1169318609@qq.com");
+    public static void writeToXML(List<?> objects,String filePath,String fileName) throws Exception {
 
         Document document = DocumentHelper.createDocument();
         Element root = document.addElement("root");
-        Element row = root.addElement("employee");
-        row.addElement("id").addText(employee.getEmpId());
-        row.addElement("name").addText(employee.getEmpName());
-        row.addElement("gender").addText(employee.getGender());
-        row.addElement("address").addText(employee.getAddress());
-        row.addElement("birth").addText(employee.getBirth());
-        row.addElement("desc").addText(employee.getDescText());
-        row.addElement("email").addText(employee.getEmail());
-
-        String filePath = "E:/xmlTest/" + getNowDay() + "/";
-        String fileName = "employee.xml";
-
+        Class<?> employeeClass = objects.get(0).getClass();
+        String simpleName = employeeClass.getSimpleName();
+        Element list = root.addElement(simpleName+"List");
+        for (Object obj : objects) {
+            Element row = list.addElement(employeeClass.getSimpleName());
+            // 获取对象属性
+            Field[] fields = employeeClass.getDeclaredFields();
+            for (Field field: fields) {
+                FieldMeta fieldMeta = field.getAnnotation(FieldMeta.class);
+                if(fieldMeta.flag()) {
+                    String name = field.getName();
+                    // 私有属性必须设置访问权限
+                    field.setAccessible(true);
+                    Object resultValue = field.get(obj);
+                    row.addElement(name).addText(String.valueOf(resultValue));
+                }
+            }
+        }
         String xmlStr = "";
         xmlStr = document.asXML();
         try {
@@ -90,7 +94,6 @@ public class ParseXmlUtil {
             e.printStackTrace();
         }
     }
-
 
     public static String getNowDay() {
         SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
@@ -148,9 +151,47 @@ public class ParseXmlUtil {
         // 存到文件中结束
     }
 
-    public static void main(String args[]) {
-        readXML();
-//        writeToXML();
+    public static void main(String args[]) throws Exception {
+
+        EmployeeService employeeService = (EmployeeService) WSClientUtils.getInstance("EmployeeService",EmployeeService.class);
+        List<Object> objects = readXML(Employee.class);
+        for (int i = 0; i < objects.size(); i++) {
+            Employee employee = (Employee) objects.get(i);
+            boolean b = employeeService.addEmployee(employee);
+            System.out.println(b);
+        }
+
+//        List<Employee> list = new ArrayList<Employee>();
+//        Employee employee1 = new Employee();
+//        employee1.setEmpId("001");
+//        employee1.setEmpName("lijing");
+//        employee1.setGender("男");
+//        employee1.setAddress("江西吉安");
+//        employee1.setBirth("1992-01-30");
+//        employee1.setDescText("ha lou");
+//        employee1.setEmail("1169318609@qq.com");
+//
+//        Employee employee2 = new Employee();
+//        employee2.setEmpId("002");
+//        employee2.setEmpName("kaisn");
+//        employee2.setGender("女");
+//        employee2.setAddress("江西南昌");
+//        employee2.setBirth("1992-11-26");
+//        employee2.setDescText("哈哈哈");
+//        employee2.setEmail("116984293@qq.com");
+//
+//        list.add(employee1);
+//        list.add(employee2);
+
+        Employee employee = new Employee();
+        employee.setOffset(0);
+        employee.setRows(100);
+        List<Employee> list = employeeService.getEmployeeList(employee);
+
+        String filePath = "E:/xmlTest/" + getNowDay() + "/";
+        String fileName = "Employee.xml";
+
+        writeToXML(list,filePath,fileName);
     }
 
 }
