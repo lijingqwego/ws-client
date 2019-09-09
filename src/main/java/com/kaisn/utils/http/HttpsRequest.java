@@ -7,7 +7,10 @@ import javax.net.ssl.*;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.security.SecureRandom;
+import java.util.Iterator;
+import java.util.Map;
 
 
 public class HttpsRequest {
@@ -146,6 +149,35 @@ public class HttpsRequest {
             }
         }
         return buffer.toString();
+    }
+
+    /**
+     * 将参数化为 body
+     * @param params
+     * @param urlEncode
+     * @return
+     */
+    public static String getRequestBody(Map<String, String> params, boolean urlEncode) {
+        StringBuilder body = new StringBuilder();
+        Iterator<String> iteratorHeader = params.keySet().iterator();
+        while (iteratorHeader.hasNext()) {
+            String key = iteratorHeader.next();
+            String value = params.get(key);
+            if (urlEncode) {
+                try {
+                    body.append(key + "=" + URLEncoder.encode(value, CHARSET_UTF_8) + "&");
+                } catch (UnsupportedEncodingException e) {
+                     e.printStackTrace();
+                }
+            } else {
+                body.append(key + "=" + value + "&");
+            }
+        }
+
+        if (body.length() == 0) {
+            return "";
+        }
+        return body.substring(0, body.length() - 1);
     }
 
     public static void main(String[] args)  {

@@ -85,8 +85,7 @@ public class ParseXmlUtil {
                 }
             }
         }
-        String xmlStr = "";
-        xmlStr = document.asXML();
+        String xmlStr = document.asXML();
         try {
             Document dcmt = DocumentHelper.parseText(xmlStr);
             saveDocumentToFile(dcmt, filePath, fileName, true, "UTF-8");

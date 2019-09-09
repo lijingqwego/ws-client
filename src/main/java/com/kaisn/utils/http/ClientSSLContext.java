@@ -39,12 +39,12 @@ public class ClientSSLContext
 
         // 实例化信任库
         TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
-        // 获取证书配置tclient.keystore
+        // 获取证书配置
         String trustClientKeystorePath=PropertyUtil.getProperty(TRUST_CLIENT_KEYSTORE_PATH);
         String trustClientKeystorePassword=PropertyUtil.getProperty(TRUST_CLIENT_KEYSTORE_PASSWORD);
         // 解密证书密码
         trustClientKeystorePassword = SymmetricEncoder.AESDncode(trustClientKeystorePassword);
-        // 获得信任库
+        // 获得信任库tclient.keystore
         KeyStore trustKeyStore = getKeyStore(RESOURCE_PATH+trustClientKeystorePath,trustClientKeystorePassword);
         // 初始化信任库
         tmf.init(trustKeyStore);
