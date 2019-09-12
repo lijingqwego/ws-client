@@ -53,6 +53,8 @@
         <jjwt.version>0.6.0</jjwt.version>
 
         <cxf.version>3.1.6</cxf.version>
+
+        <activemq-version>5.10.0</activemq-version>
     </properties>
     <dependencies>
         <dependency>
@@ -98,6 +100,12 @@
             <artifactId>mybatis-spring</artifactId>
             <version>${mybatis.spring.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jms</artifactId>
+            <version>${spring.version}</version>
+         </dependency>
+
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>druid</artifactId>
@@ -278,6 +286,14 @@
             <artifactId>cxf-rt-transports-http</artifactId>
             <version>${cxf.version}</version>
         </dependency>
+
+        <!-- activemq-all -->
+        <dependency>
+            <groupId>org.apache.activemq</groupId>
+            <artifactId>activemq-all</artifactId>
+            <version>${activemq-version}</version>
+        </dependency>
+
     </dependencies>
 
     <profiles>
