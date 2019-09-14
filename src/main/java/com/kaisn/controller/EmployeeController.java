@@ -1,16 +1,25 @@
 package com.kaisn.controller;
 
 
+import com.alibaba.fastjson.JSON;
 import com.kaisn.WSClientUtils;
 import com.kaisn.pojo.Msg;
 import com.kaisn.utils.excel.ExcelUtils;
 import com.kaisn.ws.Employee;
 import com.kaisn.ws.EmployeeService;
+import org.apache.activemq.command.ActiveMQDestination;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jms.core.JmsTemplate;
+import org.springframework.jms.core.MessageCreator;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.jms.Destination;
+import javax.jms.JMSException;
+import javax.jms.Message;
+import javax.jms.Session;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -19,6 +28,8 @@ import javax.xml.ws.Service;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import org.apache.log4j.Logger;
 
 @Controller
@@ -28,6 +39,9 @@ public class EmployeeController {
     private static Logger logger = Logger.getLogger(EmployeeController.class);
 
     private static final String SERVICE_NAME = "EmployeeService";
+
+    @Autowired
+    private JmsTemplate jmsTemplate;
 
     @ResponseBody
     @RequestMapping(value = "/list",method = RequestMethod.POST)
@@ -73,10 +87,24 @@ public class EmployeeController {
             employee.setDescText(descText);
             employee.setAddress(address);
 
-            EmployeeService employeeService = (EmployeeService) WSClientUtils.getInstance(SERVICE_NAME,EmployeeService.class);
+            Map<String, Object> messageMap = new HashMap<String, Object>();
+            messageMap.put("operateType","add");
+            messageMap.put("data",employee);
+
+            final String message = JSON.toJSONString(messageMap);
+
+            jmsTemplate.send("emp-web-mq",new MessageCreator() {
+                public Message createMessage(Session session) throws JMSException {
+                    return session.createTextMessage(message);
+                }
+            });
+
+            System.out.println("发送成功....");
+
+            //EmployeeService employeeService = (EmployeeService) WSClientUtils.getInstance(SERVICE_NAME,EmployeeService.class);
 
             //添加数据
-            isSuccess = employeeService.addEmployee(employee);
+            //isSuccess = employeeService.addEmployee(employee);
         } catch (Exception e) {
             logger.error("添加数据失败！",e);
         }

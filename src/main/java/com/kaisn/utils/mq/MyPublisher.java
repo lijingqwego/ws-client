@@ -4,6 +4,9 @@ import org.apache.activemq.ActiveMQConnectionFactory;
 
 import javax.jms.*;
 
+/**
+ * 主题发布者
+ */
 public class MyPublisher {
 
     public static void publishTopic()
