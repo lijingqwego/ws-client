@@ -87,19 +87,7 @@ public class EmployeeController {
             employee.setDescText(descText);
             employee.setAddress(address);
 
-            Map<String, Object> messageMap = new HashMap<String, Object>();
-            messageMap.put("operateType","add");
-            messageMap.put("data",employee);
-
-            final String message = JSON.toJSONString(messageMap);
-
-            jmsTemplate.send("emp-web-mq",new MessageCreator() {
-                public Message createMessage(Session session) throws JMSException {
-                    return session.createTextMessage(message);
-                }
-            });
-
-            System.out.println("发送成功....");
+            sendMessage("add",employee);
 
             //EmployeeService employeeService = (EmployeeService) WSClientUtils.getInstance(SERVICE_NAME,EmployeeService.class);
 
@@ -122,10 +110,12 @@ public class EmployeeController {
             Employee employee = new Employee();
             employee.setEmpId(empId);
 
-            EmployeeService employeeService = (EmployeeService) WSClientUtils.getInstance(SERVICE_NAME,EmployeeService.class);
+            sendMessage("del",employee);
+
+//            EmployeeService employeeService = (EmployeeService) WSClientUtils.getInstance(SERVICE_NAME,EmployeeService.class);
 
             //删除数据
-            isSuccess = employeeService.delEmployee(employee);
+//            isSuccess = employeeService.delEmployee(employee);
         } catch (Exception e) {
             logger.error("删除数据失败！",e);
         }
@@ -176,10 +166,12 @@ public class EmployeeController {
             employee.setDescText(descText);
             employee.setAddress(address);
 
-            EmployeeService employeeService = (EmployeeService) WSClientUtils.getInstance(SERVICE_NAME,EmployeeService.class);
+            sendMessage("upd",employee);
+
+//            EmployeeService employeeService = (EmployeeService) WSClientUtils.getInstance(SERVICE_NAME,EmployeeService.class);
 
             //删除数据
-            isSuccess = employeeService.updEmployee(employee);
+//            isSuccess = employeeService.updEmployee(employee);
         } catch (Exception e) {
             logger.error("更新数据失败！",e);
         }
@@ -211,6 +203,23 @@ public class EmployeeController {
             logger.error("导出数据失败！",e);
         }
         return Msg.success().add("list",employeeList);
+    }
+
+    private void sendMessage(String operateType,Object data){
+
+        Map<String, Object> messageMap = new HashMap<String, Object>();
+        messageMap.put("operateType",operateType);
+        messageMap.put("data",data);
+
+        final String message = JSON.toJSONString(messageMap);
+
+        jmsTemplate.send("emp-web-mq",new MessageCreator() {
+            public Message createMessage(Session session) throws JMSException {
+                return session.createTextMessage(message);
+            }
+        });
+
+        logger.error("发送成功!");
     }
 
 }
